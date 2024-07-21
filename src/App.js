@@ -872,7 +872,7 @@ function Menu() {
 
 const Globe = ({ onClick }) => {
   const meshRef = useRef();
-  const texture = useLoader(TextureLoader, './images/earth.jpg');
+  const texture = useLoader(TextureLoader, `${process.env.PUBLIC_URL}/images/earth.jpg`);
   
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
