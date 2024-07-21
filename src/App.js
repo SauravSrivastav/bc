@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
