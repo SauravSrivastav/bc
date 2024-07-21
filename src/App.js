@@ -671,8 +671,18 @@ function WelcomeModal({ onClose }) {
 // Locate Component
 function Locate() {
   const [showInfo, setShowInfo] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const address = "AIROOMS Girls Hostel, Plot No-37/38, Hasemau Near, Left Lane from Petrol Pump, 4, Amity University Rd, Uttar Pradesh 226010, India";
   const mapCenter = [26.8467, 80.9462]; // Lucknow coordinates
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleGlobeClick = () => {
     setShowInfo(!showInfo);
@@ -705,15 +715,19 @@ function Locate() {
               ))}
             </div>
             <div className="h-64 sm:h-96 relative">
-              <Canvas camera={{ position: [0, 0, 4], fov: 60 }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} />
-                <Suspense fallback={null}>
-                  <Globe onClick={handleGlobeClick} />
-                </Suspense>
-                <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.5} />
-                <Stars />
-              </Canvas>
+              {isMobile ? (
+                <Globe2D onClick={handleGlobeClick} />
+              ) : (
+                <Canvas camera={{ position: [0, 0, 4], fov: 60 }}>
+                  <ambientLight intensity={0.5} />
+                  <pointLight position={[10, 10, 10]} />
+                  <Suspense fallback={null}>
+                    <Globe onClick={handleGlobeClick} />
+                  </Suspense>
+                  <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.5} />
+                  <Stars />
+                </Canvas>
+              )}
               <div className="absolute bottom-4 left-0 right-0 text-center">
                 <p className="text-white bg-black bg-opacity-50 inline-block px-4 py-2 rounded-full">
                   Click the globe to reveal our location!
@@ -942,6 +956,18 @@ function HomePage() {
     </>
   );
 }
+
+const Globe2D = ({ onClick }) => (
+  <div 
+    onClick={onClick}
+    className="w-48 h-48 rounded-full bg-blue-500 cursor-pointer mx-auto"
+    style={{
+      backgroundImage: `url(${process.env.PUBLIC_URL}/images/earth.jpg)`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }}
+  />
+);
 
 // Main App Component
 function App() {
