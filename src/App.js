@@ -872,12 +872,27 @@ function Menu() {
 
 const Globe = ({ onClick }) => {
   const meshRef = useRef();
-  const texture = useLoader(TextureLoader, `${process.env.PUBLIC_URL}/images/earth.jpg`);
-  
+  const [texture, setTexture] = useState(null);
+
+  useEffect(() => {
+    const loader = new TextureLoader();
+    loader.load(`${process.env.PUBLIC_URL}/images/earth.jpg`, (loadedTexture) => {
+      setTexture(loadedTexture);
+    }, undefined, (error) => {
+      console.error('An error occurred while loading the texture:', error);
+    });
+  }, []);
+
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    meshRef.current.rotation.y = t * 0.2;
+    if (meshRef.current) {
+      const t = state.clock.getElapsedTime();
+      meshRef.current.rotation.y = t * 0.2;
+    }
   });
+
+  if (!texture) {
+    return null; // or return a loading indicator
+  }
 
   return (
     <mesh ref={meshRef} onClick={onClick}>
