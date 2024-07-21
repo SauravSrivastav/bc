@@ -2,7 +2,7 @@
   "name": "baba-chatore",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sauravsrivastav2205.github.io/bc",
+  "homepage": "https://sauravsrivastav.github.io/bc",
   "dependencies": {
     "@headlessui/react": "^2.1.2",
     "@react-pdf/renderer": "^3.4.4",
