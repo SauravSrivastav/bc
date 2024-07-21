@@ -886,48 +886,6 @@ const Globe = ({ onClick }) => {
   );
 };
 
-//Globe Component
-// const Globe = ({ onClick }) => {
-//   const meshRef = useRef();
-//   const [texture, setTexture] = useState(null);
-
-//   useEffect(() => {
-//     const loader = new TextureLoader();
-//     loader.load(`${process.env.PUBLIC_URL}/images/earth.jpg`, 
-//       (loadedTexture) => {
-//         setTexture(loadedTexture);
-//       }, 
-//       undefined, 
-//       (error) => {
-//         console.error('An error occurred while loading the texture:', error);
-//       }
-//     );
-//   }, []);
-
-//   useFrame((state) => {
-//     if (meshRef.current) {
-//       const t = state.clock.getElapsedTime();
-//       meshRef.current.rotation.y = t * 0.2;
-//     }
-//   });
-
-//   if (!texture) {
-//     return (
-//       <mesh ref={meshRef} onClick={onClick}>
-//         <sphereGeometry args={[1.5, 64, 64]} />
-//         <meshStandardMaterial color="blue" /> {/* Fallback color */}
-//       </mesh>
-//     );
-//   }
-
-//   return (
-//     <mesh ref={meshRef} onClick={onClick}>
-//       <sphereGeometry args={[1.5, 64, 64]} />
-//       <meshStandardMaterial map={texture} />
-//     </mesh>
-//   );
-// };
-
 function HomePage() {
   return (
     <>
