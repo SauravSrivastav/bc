@@ -708,7 +708,9 @@ function Locate() {
               <Canvas camera={{ position: [0, 0, 4], fov: 60 }}>
                 <ambientLight intensity={0.5} />
                 <pointLight position={[10, 10, 10]} />
-                <Globe onClick={handleGlobeClick} />
+                <Suspense fallback={null}>
+                  <Globe onClick={handleGlobeClick} />
+                </Suspense>
                 <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.5} />
                 <Stars />
               </Canvas>
@@ -855,17 +857,36 @@ function Menu() {
 // Globe Component
 const Globe = ({ onClick }) => {
   const meshRef = useRef();
-  const texture = useLoader(TextureLoader, `${process.env.PUBLIC_URL}/images/earth.jpg`);
-  
+  const [texture, setTexture] = useState(null);
+
+  useEffect(() => {
+    const loader = new TextureLoader();
+    loader.load(`${process.env.PUBLIC_URL}/images/earth.jpg`, 
+      (loadedTexture) => {
+        setTexture(loadedTexture);
+      }, 
+      undefined, 
+      (error) => {
+        console.error('An error occurred while loading the texture:', error);
+      }
+    );
+  }, []);
+
   useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    meshRef.current.rotation.y = t * 0.2;
+    if (meshRef.current) {
+      const t = state.clock.getElapsedTime();
+      meshRef.current.rotation.y = t * 0.2;
+    }
   });
 
   return (
     <mesh ref={meshRef} onClick={onClick}>
       <sphereGeometry args={[1.5, 64, 64]} />
-      <meshStandardMaterial map={texture} />
+      {texture ? (
+        <meshStandardMaterial map={texture} />
+      ) : (
+        <meshStandardMaterial color="#4a6fa5" metalness={0.1} roughness={0.7} />
+      )}
     </mesh>
   );
 };
