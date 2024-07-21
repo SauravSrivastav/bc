@@ -870,17 +870,22 @@ function Menu() {
 //   );
 // };
 
+//Globe Component
 const Globe = ({ onClick }) => {
   const meshRef = useRef();
   const [texture, setTexture] = useState(null);
 
   useEffect(() => {
     const loader = new TextureLoader();
-    loader.load(`${process.env.PUBLIC_URL}/images/earth.jpg`, (loadedTexture) => {
-      setTexture(loadedTexture);
-    }, undefined, (error) => {
-      console.error('An error occurred while loading the texture:', error);
-    });
+    loader.load(`${process.env.PUBLIC_URL}/images/earth.jpg`, 
+      (loadedTexture) => {
+        setTexture(loadedTexture);
+      }, 
+      undefined, 
+      (error) => {
+        console.error('An error occurred while loading the texture:', error);
+      }
+    );
   }, []);
 
   useFrame((state) => {
@@ -891,7 +896,12 @@ const Globe = ({ onClick }) => {
   });
 
   if (!texture) {
-    return null; // or return a loading indicator
+    return (
+      <mesh ref={meshRef} onClick={onClick}>
+        <sphereGeometry args={[1.5, 64, 64]} />
+        <meshStandardMaterial color="blue" /> {/* Fallback color */}
+      </mesh>
+    );
   }
 
   return (
