@@ -853,9 +853,26 @@ function Menu() {
 }
 
 // Globe Component
+// const Globe = ({ onClick }) => {
+//   const meshRef = useRef();
+//   const texture = useLoader(TextureLoader, './earth.jpg');
+  
+//   useFrame((state) => {
+//     const t = state.clock.getElapsedTime();
+//     meshRef.current.rotation.y = t * 0.2;
+//   });
+
+//   return (
+//     <mesh ref={meshRef} onClick={onClick}>
+//       <sphereGeometry args={[1.5, 64, 64]} />
+//       <meshStandardMaterial map={texture} />
+//     </mesh>
+//   );
+// };
+
 const Globe = ({ onClick }) => {
   const meshRef = useRef();
-  const texture = useLoader(TextureLoader, './earth.jpg');
+  const texture = useLoader(TextureLoader, './images/earth.jpg');
   
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
