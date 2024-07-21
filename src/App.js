@@ -94,11 +94,11 @@ function Header() {
 function Hero() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const backgroundImages = [
-    '/images/Lucknow.jpg',
-    '/images/1520146564108.jpeg',
-    '/images/juice.png',
-    '/images/about.png',
-    '/images/tunday-kebab.jpg'
+    `${process.env.PUBLIC_URL}/images/Lucknow.jpg`,
+    `${process.env.PUBLIC_URL}/images/1520146564108.jpeg`,
+    `${process.env.PUBLIC_URL}/images/juice.png`,
+    `${process.env.PUBLIC_URL}/images/about.png`,
+    `${process.env.PUBLIC_URL}/images/tunday-kebab.jpg`
   ];
 
   useEffect(() => {
@@ -375,7 +375,7 @@ function TodaysSpecials() {
       dish: {
         name: 'Dosa',
         description: 'Crispy South Indian crepe made from fermented rice and lentil batter.',
-        image: '/images/dosa.jpg'
+        image: `${process.env.PUBLIC_URL}/images/dosa.jpg`
       },
       ingredients: ['Rice', 'Lentils', 'Fenugreek Seeds', 'Salt']
     },
@@ -383,7 +383,7 @@ function TodaysSpecials() {
       dish: {
         name: 'Chaat',
         description: 'A savory snack originating from India, typically served as a hors d\'oeuvre.',
-        image: '/images/chaat.jpg'
+        image: `${process.env.PUBLIC_URL}/images/chaat.jpg`
       },
       ingredients: ['Chickpeas', 'Potatoes', 'Onions', 'Tamarind Chutney', 'Yogurt']
     },
@@ -391,7 +391,7 @@ function TodaysSpecials() {
       dish: {
         name: 'Pizza',
         description: 'Our signature pizza with a blend of Indian and Italian flavors.',
-        image: '/images/pizza.jpg'
+        image: `${process.env.PUBLIC_URL}/images/pizza.jpg`
       },
       ingredients: ['Naan Bread', 'Tomato Sauce', 'Mozzarella', 'Tandoori Chicken', 'Bell Peppers']
     },
@@ -471,14 +471,14 @@ function InteractiveGallery() {
   const scrollRef = useRef(null);
 
   const galleryImages = [
-    { src: '/images/1520146564108.jpeg', alt: 'Baba Chatore Ambiance', category: 'Indoor' },
-    { src: '/images/about.png', alt: 'About Baba Chatore', category: 'Indoor' },
-    { src: '/images/chaat.jpg', alt: 'Delicious Chaat', category: 'Indoor' },
-    { src: '/images/dosa.jpg', alt: 'Crispy Dosa', category: 'Indoor' },
-    { src: './images/juice.png', alt: 'Fresh Juices', category: 'Indoor' },
-    { src: './images/Lucknow.jpg', alt: 'Lucknow City', category: 'Outdoor' },
-    { src: '/images/pizza.jpg', alt: 'Fusion Pizza', category: 'Indoor' },
-    { src: '/images/tunday-kebab.jpg', alt: 'Famous Tunday Kebab', category: 'Indoor' },
+    { src: `${process.env.PUBLIC_URL}/images/1520146564108.jpeg`, alt: 'Baba Chatore Ambiance', category: 'Indoor' },
+    { src: `${process.env.PUBLIC_URL}/images/about.png`, alt: 'About Baba Chatore', category: 'Indoor' },
+    { src: `${process.env.PUBLIC_URL}/images/chaat.jpg`, alt: 'Delicious Chaat', category: 'Indoor' },
+    { src: `${process.env.PUBLIC_URL}/images/dosa.jpg`, alt: 'Crispy Dosa', category: 'Indoor' },
+    { src: `${process.env.PUBLIC_URL}/images/juice.png`, alt: 'Fresh Juices', category: 'Indoor' },
+    { src: `${process.env.PUBLIC_URL}/images/Lucknow.jpg`, alt: 'Lucknow City', category: 'Outdoor' },
+    { src: `${process.env.PUBLIC_URL}/images/pizza.jpg`, alt: 'Fusion Pizza', category: 'Indoor' },
+    { src: `${process.env.PUBLIC_URL}/images/tunday-kebab.jpg`, alt: 'Famous Tunday Kebab', category: 'Indoor' },
   ];
 
   const categories = ['Indoor', 'Outdoor'];
@@ -872,7 +872,7 @@ function Menu() {
 
 const Globe = ({ onClick }) => {
   const meshRef = useRef();
-  const texture = useLoader(TextureLoader, './images/earth.jpg');
+  const texture = useLoader(TextureLoader, `${process.env.PUBLIC_URL}/images/earth.jpg`);
   
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
