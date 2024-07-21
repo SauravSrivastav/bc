@@ -475,7 +475,7 @@ function InteractiveGallery() {
     { src: '/images/about.png', alt: 'About Baba Chatore', category: 'Indoor' },
     { src: '/images/chaat.jpg', alt: 'Delicious Chaat', category: 'Indoor' },
     { src: '/images/dosa.jpg', alt: 'Crispy Dosa', category: 'Indoor' },
-    { src: '/images/juice.png', alt: 'Fresh Juices', category: 'Indoor' },
+    { src: '/public/images/juice.png', alt: 'Fresh Juices', category: 'Indoor' },
     { src: '/images/Lucknow.jpg', alt: 'Lucknow City', category: 'Outdoor' },
     { src: '/images/pizza.jpg', alt: 'Fusion Pizza', category: 'Indoor' },
     { src: '/images/tunday-kebab.jpg', alt: 'Famous Tunday Kebab', category: 'Indoor' },
