@@ -877,7 +877,7 @@ const Globe = ({ onClick }) => {
 
   useEffect(() => {
     const loader = new TextureLoader();
-    loader.load(`${process.env.PUBLIC_URL}/images/earth.jpg`, 
+    loader.load(`${process.env.PUBLIC_URL}/earth.jpg`, 
       (loadedTexture) => {
         setTexture(loadedTexture);
       }, 
