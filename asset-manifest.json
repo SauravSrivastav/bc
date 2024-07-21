@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/baba-chatore/static/css/main.6947fe19.css",
-    "main.js": "/baba-chatore/static/js/main.fa1a77ea.js",
-    "index.html": "/baba-chatore/index.html",
-    "main.6947fe19.css.map": "/baba-chatore/static/css/main.6947fe19.css.map",
-    "main.fa1a77ea.js.map": "/baba-chatore/static/js/main.fa1a77ea.js.map"
+    "main.css": "/bc/static/css/main.6947fe19.css",
+    "main.js": "/bc/static/js/main.fa1a77ea.js",
+    "index.html": "/bc/index.html",
+    "main.6947fe19.css.map": "/bc/static/css/main.6947fe19.css.map",
+    "main.fa1a77ea.js.map": "/bc/static/js/main.fa1a77ea.js.map"
   },
   "entrypoints": [
     "static/css/main.6947fe19.css",
