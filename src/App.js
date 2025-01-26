@@ -7,6 +7,185 @@ import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { Document, Page, PDFViewer } from '@react-pdf/renderer';
+import MenuDocument from './components/MenuPDF';
+import { Users, Cake, Utensils, GraduationCap, X, ImageOff } from 'lucide-react';
+
+// Image component with fallback handling
+const ImageWithFallback = ({ src, fallbackSrc, alt, className }) => {
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  return (
+    <div className="relative w-full h-full">
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm">
+          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      <img
+        src={error ? fallbackSrc : src}
+        alt={alt}
+        className={className}
+        onError={() => setError(true)}
+        onLoad={() => setLoading(false)}
+      />
+      {error && loading && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/50 backdrop-blur-sm">
+          <ImageOff className="w-12 h-12 text-primary/50 mb-2" />
+          <p className="text-sm text-primary/50">Image not available</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const services = [
+  {
+    id: 1,
+    title: 'Birthday Celebrations',
+    description: 'Make your special day unforgettable with our exclusive birthday celebration packages. We create magical moments with customized decorations, special menus, and personalized service.',
+    icon: Cake,
+    image: `${process.env.PUBLIC_URL}/images/birthday.jpeg`,
+    fallbackImage: `${process.env.PUBLIC_URL}/images/1520146564108.jpeg`,
+    category: 'celebrations',
+    tags: ['Custom Theme', 'Live Music', 'Photo Booth'],
+    features: [
+      'Customized cake arrangements',
+      'Themed decorations',
+      'Special group menus',
+      'Professional event coordination'
+    ],
+    pricing: {
+      starting: 999,
+      packages: [
+        { name: 'Basic', price: 999 },
+        { name: 'Premium', price: 1999 }
+      ]
+    },
+    availability: {
+      daysInAdvance: 7,
+      maxGuests: 200
+    },
+    gallery: [
+      `${process.env.PUBLIC_URL}/images/birthday.jpeg`,
+      `${process.env.PUBLIC_URL}/images/indoor-1.jpeg`,
+      `${process.env.PUBLIC_URL}/images/about.png`,
+      `${process.env.PUBLIC_URL}/images/chaat.jpg`,
+      `${process.env.PUBLIC_URL}/images/dosa.jpg`,
+      `${process.env.PUBLIC_URL}/images/pizza.jpg`
+    ]
+  },
+  {
+    id: 2,
+    title: 'Kitty Parties',
+    description: 'Host the perfect kitty party with our specially curated menus and elegant ambiance. We ensure your gathering is both sophisticated and enjoyable.',
+    icon: Users,
+    image: `${process.env.PUBLIC_URL}/images/indoor-1.jpeg`,
+    fallbackImage: `${process.env.PUBLIC_URL}/images/about.png`,
+    category: 'celebrations',
+    tags: ['Exclusive Area', 'Custom Menu', 'Entertainment'],
+    features: [
+      'Exclusive party area',
+      'Special group menus',
+      'Customized decorations',
+      'Entertainment options',
+      'Flexible timing slots',
+      'Complimentary mocktails'
+    ],
+    pricing: {
+      starting: 799,
+      packages: [
+        { name: 'Basic', price: 799 },
+        { name: 'Premium', price: 1499 }
+      ]
+    },
+    availability: {
+      daysInAdvance: 5,
+      maxGuests: 50
+    },
+    gallery: [
+      `${process.env.PUBLIC_URL}/images/indoor-1.jpeg`,
+      `${process.env.PUBLIC_URL}/images/about.png`,
+      `${process.env.PUBLIC_URL}/images/Lucknow.jpg`,
+      `${process.env.PUBLIC_URL}/images/juice.png`,
+      `${process.env.PUBLIC_URL}/images/tunday-kebab.jpg`,
+      `${process.env.PUBLIC_URL}/images/chaat.jpg`
+    ]
+  },
+  {
+    id: 3,
+    title: 'Catering Services',
+    description: 'From intimate gatherings to grand events, our catering service brings the authentic taste of Lucknow to your doorstep.',
+    icon: Utensils,
+    image: `${process.env.PUBLIC_URL}/images/tunday-kebab.jpg`,
+    fallbackImage: `${process.env.PUBLIC_URL}/images/chaat.jpg`,
+    category: 'catering',
+    tags: ['Custom Menu', 'Professional Staff', 'Setup Included'],
+    features: [
+      'Customized menus',
+      'Professional staff',
+      'Complete setup and service',
+      'Quality assurance'
+    ],
+    pricing: {
+      starting: 299,
+      packages: [
+        { name: 'Basic', price: 299 },
+        { name: 'Premium', price: 599 }
+      ]
+    },
+    availability: {
+      daysInAdvance: 3,
+      maxGuests: 1000
+    },
+    gallery: [
+      `${process.env.PUBLIC_URL}/images/tunday-kebab.jpg`,
+      `${process.env.PUBLIC_URL}/images/chaat.jpg`,
+      `${process.env.PUBLIC_URL}/images/pizza.jpg`,
+      `${process.env.PUBLIC_URL}/images/dosa.jpg`,
+      `${process.env.PUBLIC_URL}/images/juice.png`,
+      `${process.env.PUBLIC_URL}/images/indoor-1.jpeg`
+    ]
+  },
+  {
+    id: 4,
+    title: 'College/School Catering',
+    description: 'Special catering services designed for educational institutions. We offer nutritious and delicious meals perfect for large groups.',
+    icon: GraduationCap,
+    image: `${process.env.PUBLIC_URL}/images/juice.png`,
+    fallbackImage: `${process.env.PUBLIC_URL}/images/dosa.jpg`,
+    category: 'corporate',
+    tags: ['Bulk Orders', 'Nutritious', 'Quick Service'],
+    features: [
+      'Bulk order capacity',
+      'Nutritious meal plans',
+      'Quick service system',
+      'Special student packages',
+      'Regular menu rotation',
+      'Hygiene certified'
+    ],
+    pricing: {
+      starting: 199,
+      packages: [
+        { name: 'Basic', price: 199 },
+        { name: 'Premium', price: 399 }
+      ]
+    },
+    availability: {
+      daysInAdvance: 2,
+      maxGuests: 2000
+    },
+    gallery: [
+      `${process.env.PUBLIC_URL}/images/juice.png`,
+      `${process.env.PUBLIC_URL}/images/dosa.jpg`,
+      `${process.env.PUBLIC_URL}/images/chaat.jpg`,
+      `${process.env.PUBLIC_URL}/images/pizza.jpg`,
+      `${process.env.PUBLIC_URL}/images/tunday-kebab.jpg`,
+      `${process.env.PUBLIC_URL}/images/indoor-1.jpeg`
+    ]
+  }
+];
 
 // Particle Background Component
 const ParticleBackground = () => {
@@ -14,18 +193,17 @@ const ParticleBackground = () => {
     if (window.particlesJS) {
       window.particlesJS("particles-js", {
         particles: {
-          number: { value: 40, density: { enable: true, value_area: 800 } },
-          color: { value: "#ffffff" },
-          shape: { type: "circle", stroke: { width: 0, color: "#000000" } },
-          opacity: { value: 0.1, random: true, anim: { enable: false, speed: 1, opacity_min: 0.1, sync: false } },
-          size: { value: 3, random: true, anim: { enable: false, speed: 40, size_min: 0.1, sync: false } },
-          line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.1, width: 1 },
-          move: { enable: true, speed: 2, direction: "none", random: false, straight: false, out_mode: "out", bounce: false, attract: { enable: false, rotateX: 600, rotateY: 1200 } }
+          number: { value: 30, density: { enable: true, value_area: 800 } },
+          color: { value: "#64748b" },
+          shape: { type: "circle" },
+          opacity: { value: 0.05, random: true },
+          size: { value: 2, random: true },
+          line_linked: { enable: true, distance: 150, color: "#64748b", opacity: 0.05, width: 1 },
+          move: { enable: true, speed: 1, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
         },
         interactivity: {
           detect_on: "canvas",
-          events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
-          modes: { repulse: { distance: 200, duration: 0.4 }, push: { particles_nb: 4 } }
+          events: { onhover: { enable: true, mode: "none" }, onclick: { enable: false }, resize: true },
         },
         retina_detect: true
       });
@@ -38,28 +216,37 @@ const ParticleBackground = () => {
 // Loading Spinner Component
 const LoadingSpinner = () => (
   <div className="flex justify-center items-center h-screen" aria-label="Loading">
-    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-yellow-500"></div>
+    <div className="loading-spinner"></div>
   </div>
 );
 
 // Header Component
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const navItems = ['Home', 'About', 'Services', 'Menu', 'Gallery', 'Locate'];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-20 bg-gray-900 bg-opacity-90">
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
+    <header className="fixed top-0 left-0 right-0 z-20 bg-background/80 backdrop-blur-sm border-b border-border">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-2xl sm:text-3xl font-bold text-yellow-500">Baba Chatore</Link>
-          <div className="hidden md:flex space-x-4">
-            {['Home', 'About', 'Menu', 'Gallery', 'Locate'].map((item) => (
-              <Link key={item} to={item === 'Home' ? '/' : `/${item.toLowerCase()}`} className="text-white hover:text-yellow-500 transition">
+          <Link to="/" className="text-2xl sm:text-3xl font-bold text-accent font-display">Baba Chatore</Link>
+          <div className="hidden md:flex space-x-6">
+            {navItems.map((item) => (
+              <Link 
+                key={item} 
+                to={item === 'Home' ? '/' : `/${item.toLowerCase()}`} 
+                className="text-primary/80 hover:text-accent transition-colors duration-200"
+              >
                 {item}
               </Link>
             ))}
           </div>
-          <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white focus:outline-none">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <button 
+            onClick={() => setIsOpen(!isOpen)} 
+            className="md:hidden text-primary focus:outline-none"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
@@ -68,16 +255,17 @@ function Header() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden bg-gray-900 bg-opacity-90"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-background/95 backdrop-blur-sm border-t border-border"
           >
-            {['Home', 'About', 'Menu', 'Gallery', 'Locate'].map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item}
                 to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
-                className="block px-4 py-2 text-white hover:bg-gray-800 transition"
+                className="block px-4 py-3 text-primary/80 hover:text-accent hover:bg-background-light transition-colors duration-200"
                 onClick={() => setIsOpen(false)}
               >
                 {item}
@@ -122,58 +310,57 @@ function Hero() {
         />
       ))}
       
-      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-[1px]"></div>
       
-      <div className="relative z-20 max-w-3xl mx-auto text-center">
-        <motion.h1
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-white"
-        >
-          BABA CHATORE
-        </motion.h1>
-        <motion.h2
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-8 text-yellow-400"
-        >
-          Lucknow's Renowned Cuisine
-        </motion.h2>
-        <motion.p
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-lg sm:text-xl mb-8 text-white"
-        >
-          Open 24 Hours<br />We Deliver Anywhere in Lucknow<br />Order Now: +91 7838231467
-        </motion.p>
+      <div className="relative z-20 max-w-4xl mx-auto text-center">
         <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="space-y-6"
         >
-          <Link to="/menu" className="bg-yellow-500 text-white px-8 py-3 rounded-full text-lg hover:bg-yellow-600 transition duration-300 inline-block">
-            Explore Menu
-          </Link>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold font-display text-accent">
+            BABA CHATORE
+          </h1>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-primary">
+            Lucknow's Renowned Cuisine
+          </h2>
+          <p className="text-lg sm:text-xl text-primary/90 space-y-2">
+            <span className="block">Open 24 Hours</span>
+            <span className="block">We Deliver Anywhere in Lucknow</span>
+            <span className="block">Order Now: +91 7838231467</span>
+          </p>
+          <div className="pt-4">
+            <Link 
+              to="/menu" 
+              className="bg-accent hover:bg-accent-600 text-background px-8 py-3 rounded-full text-lg font-medium transition-colors duration-200 inline-flex items-center space-x-2 shadow-lg hover:shadow-xl"
+            >
+              <span>Explore Menu</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
         </motion.div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
-        <div className="container mx-auto flex justify-center space-x-8">
-          {['Open 24/7', 'Free Delivery', 'Online Booking'].map((item, index) => (
+      <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-background to-transparent backdrop-blur-sm">
+        <div className="container mx-auto flex justify-center space-x-12">
+          {[
+            { icon: '🕒', text: 'Open 24/7', desc: 'Always at your service' },
+            { icon: '🚚', text: 'Free Delivery', desc: 'Within Lucknow city' },
+            { icon: '💻', text: 'Online Booking', desc: 'Quick & easy reservations' }
+          ].map((item, index) => (
             <motion.div
               key={index}
               className="text-center"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
             >
-              <div className="text-yellow-400 text-2xl mb-1" aria-hidden="true">
-                {index === 0 ? '🕒' : index === 1 ? '🚚' : '💻'}
-              </div>
-              <div className="text-white text-sm">{item}</div>
+              <div className="text-4xl mb-2" aria-hidden="true">{item.icon}</div>
+              <div className="text-accent font-medium">{item.text}</div>
+              <div className="text-primary/70 text-sm">{item.desc}</div>
             </motion.div>
           ))}
         </div>
@@ -185,26 +372,91 @@ function Hero() {
 // About Us Component
 function AboutUs() {
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center">About Baba Chatore</h2>
-        <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-lg p-6 sm:p-8">
-          <p className="text-base sm:text-lg mb-4">
-            For over 40 years, Baba Chatore has been the heart of Lucknow's culinary scene, serving authentic Awadhi cuisine with a modern twist.
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-4xl font-bold text-primary mb-4">About Baba Chatore</h2>
+          <p className="text-primary/80 max-w-2xl mx-auto">
+            A legacy of authentic flavors, crafted with passion and tradition
           </p>
-          <p className="text-base sm:text-lg mb-4">
-            Our journey began in the narrow lanes of old Lucknow, and today we continue to delight food lovers with our signature dishes and warm hospitality.
-          </p>
-          <div className="text-center mt-6">
-            <Link to="/about" className="bg-yellow-500 text-white px-6 py-2 rounded-full hover:bg-yellow-600 transition duration-300">
-              Read More
-            </Link>
-          </div>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="space-y-6"
+          >
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 shadow-lg border border-border">
+              <h3 className="text-xl font-semibold text-primary mb-4">Our Journey</h3>
+              <p className="text-primary/80">
+                For over 40 years, Baba Chatore has been the heart of Lucknow's culinary scene, serving authentic Awadhi cuisine with a modern twist.
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 shadow-lg border border-border">
+              <h3 className="text-xl font-semibold text-primary mb-4">Our Philosophy</h3>
+              <p className="text-primary/80">
+                Our journey began in the narrow lanes of old Lucknow, and today we continue to delight food lovers with our signature dishes and warm hospitality.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-2 gap-6"
+          >
+            {[
+              { title: 'Authentic Recipes', icon: '👨‍🍳', desc: 'Traditional preparation methods' },
+              { title: 'Fresh Ingredients', icon: '🌿', desc: 'Locally sourced produce' },
+              { title: 'Expert Chefs', icon: '🏆', desc: 'Masters of Awadhi cuisine' },
+              { title: 'Modern Ambiance', icon: '✨', desc: 'Contemporary dining experience' }
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="bg-white/5 backdrop-blur-sm rounded-lg p-6 text-center shadow-lg border border-border hover:border-accent/20 transition-colors duration-200"
+              >
+                <div className="text-4xl mb-3" aria-hidden="true">{item.icon}</div>
+                <h4 className="text-lg font-semibold text-primary mb-2">{item.title}</h4>
+                <p className="text-primary/70 text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </motion.div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mt-12"
+        >
+          <Link
+            to="/about"
+            className="inline-flex items-center space-x-2 bg-accent/10 hover:bg-accent/20 text-accent px-6 py-3 rounded-full transition-colors duration-200"
+          >
+            <span>Learn More About Us</span>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
 }
+
 // Detailed About Us Component
 function DetailedAboutUs() {
   const [activeSection, setActiveSection] = useState(null);
@@ -213,11 +465,11 @@ function DetailedAboutUs() {
   const inView = useInView(ref);
 
   const timelineEvents = [
-    { year: 1980, event: "Baba Chatore ki shuruaat", icon: "🏠" },
-    { year: 1990, event: "Pehla expansion: Hazratganj mein naya outlet", icon: "🏙️" },
-    { year: 2000, event: "Lucknow Food Festival mein 'Best Kebab' award", icon: "🏆" },
-    { year: 2010, event: "Online delivery service ki shuruaat", icon: "🚚" },
-    { year: 2020, event: "40 saal pure, naye fusion menu ka launch", icon: "🎉" }
+    { year: 1980, event: "Baba Chatore ki shuruaat", icon: "🏠", description: "Our journey began in the heart of Lucknow" },
+    { year: 1990, event: "Pehla expansion: Hazratganj mein naya outlet", icon: "🏙️", description: "First expansion into Hazratganj" },
+    { year: 2000, event: "Lucknow Food Festival mein 'Best Kebab' award", icon: "🏆", description: "Recognition for our culinary excellence" },
+    { year: 2010, event: "Online delivery service ki shuruaat", icon: "🚚", description: "Embracing modern convenience" },
+    { year: 2020, event: "40 saal pure, naye fusion menu ka launch", icon: "🎉", description: "Celebrating 40 years with innovation" }
   ];
 
   useEffect(() => {
@@ -227,103 +479,125 @@ function DetailedAboutUs() {
   }, [controls, inView]);
 
   return (
-    <div className="min-h-screen py-20 bg-gradient-to-b from-[#4a0e0b] to-[#8B0000]" ref={ref}>
-      <div className="container mx-auto px-4">
-        <motion.h1 
-          className="text-4xl font-bold mb-12 text-center text-white"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
+    <div className="min-h-screen py-20 bg-background" ref={ref}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
         >
-          Baba Chatore Ki Kahani
-        </motion.h1>
+          <h1 className="text-4xl sm:text-5xl font-bold text-primary mb-4">
+            Baba Chatore Ki Kahani
+          </h1>
+          <p className="text-primary/80 max-w-2xl mx-auto">
+            A legacy of authentic flavors, crafted with passion and tradition since 1980
+          </p>
+        </motion.div>
         
-        <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
+        <div className="grid md:grid-cols-2 gap-12 items-start mb-16">
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="space-y-6"
           >
-            <p className="text-lg mb-6 text-white">
-              1980 se lekar aaj tak, Baba Chatore Lucknow ke dil mein Awadhi cuisine ka ek behtareen namuna raha hai. Humari journey purane Lucknow ki galiyon se shuru hui, jahan Tunday Kebab aur Lucknowi Biryani ki khushbu hawa mein tairti thi.
-            </p>
-            <p className="text-lg mb-6 text-white">
-              Aaj, 40+ saal baad, hum wohi purani recipes aur techniques ke saath naye experiments bhi karte hain, taaki har customer ko ek unique dining experience mile.
-            </p>
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 shadow-lg border border-border">
+              <p className="text-lg text-primary/90">
+                1980 se lekar aaj tak, Baba Chatore Lucknow ke dil mein Awadhi cuisine ka ek behtareen namuna raha hai. Humari journey purane Lucknow ki galiyon se shuru hui, jahan Tunday Kebab aur Lucknowi Biryani ki khushbu hawa mein tairti thi.
+              </p>
+            </div>
+            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 shadow-lg border border-border">
+              <p className="text-lg text-primary/90">
+                Aaj, 40+ saal baad, hum wohi purani recipes aur techniques ke saath naye experiments bhi karte hain, taaki har customer ko ek unique dining experience mile.
+              </p>
+            </div>
           </motion.div>
           
           <motion.div 
-            className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-6 rounded-lg"
+            className="space-y-4"
             variants={{
-              hidden: { opacity: 0, scale: 0.8 },
+              hidden: { opacity: 0, scale: 0.95 },
               visible: {
                 opacity: 1,
                 scale: 1,
                 transition: {
                   delayChildren: 0.3,
-                  staggerChildren: 0.2
+                  staggerChildren: 0.1
                 }
               }
             }}
             initial="hidden"
             animate={controls}
           >
-            <h3 className="text-2xl font-semibold mb-4 text-yellow-400">Humari Journey</h3>
-            <div className="space-y-4">
-              {timelineEvents.map((event) => (
-                <motion.div
-                  key={event.year}
-                  className={`flex items-center cursor-pointer p-2 rounded-lg transition-all duration-300 ${activeSection === event.year ? 'bg-yellow-500 bg-opacity-20' : ''}`}
+            {timelineEvents.map((event) => (
+              <motion.div
+                key={event.year}
+                className={`bg-white/5 backdrop-blur-sm rounded-lg border transition-all duration-200 ${
+                  activeSection === event.year 
+                    ? 'border-accent shadow-lg' 
+                    : 'border-border hover:border-accent/50'
+                }`}
+                variants={{
+                  hidden: { y: 20, opacity: 0 },
+                  visible: { y: 0, opacity: 1 }
+                }}
+              >
+                <button
                   onClick={() => setActiveSection(event.year)}
-                  whileHover={{ scale: 1.05 }}
-                  variants={{
-                    hidden: { y: 20, opacity: 0 },
-                    visible: {
-                      y: 0,
-                      opacity: 1
-                    }
-                  }}
+                  className="w-full p-6 text-left"
                 >
-                  <div className="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mr-4 text-2xl" aria-hidden="true">
-                    {event.icon}
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center text-2xl">
+                      {event.icon}
+                    </div>
+                    <div>
+                      <span className="text-accent font-bold">{event.year}</span>
+                      <p className="text-primary/90 font-medium">{event.event}</p>
+                      {activeSection === event.year && (
+                        <motion.p
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="text-primary/70 mt-2"
+                        >
+                          {event.description}
+                        </motion.p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-bold text-yellow-400">{event.year}</span>
-                    <p className="text-white">{event.event}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                </button>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
 
-        {activeSection && (
-          <motion.div 
-            className="mb-16 bg-white bg-opacity-20 p-6 rounded-lg"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h3 className="text-2xl font-bold mb-4 text-yellow-400">{activeSection}</h3>
-            <p className="text-lg text-white">{timelineEvents.find(e => e.year === activeSection).event}</p>
-          </motion.div>
-        )}
-
         <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          viewport={{ once: true }}
           className="text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
         >
-          <h3 className="text-2xl font-semibold mb-4 text-yellow-400">Humari Specialties</h3>
+          <h3 className="text-2xl font-semibold text-primary mb-8">Humari Specialties</h3>
           <div className="flex flex-wrap justify-center gap-4">
-            {['Tunday Kebab', 'Lucknowi Biryani', 'Galawati Kebab', 'Kakori Kebab', 'Sheermal'].map((dish) => (
+            {[
+              { name: 'Tunday Kebab', icon: '🍖' },
+              { name: 'Lucknowi Biryani', icon: '🍚' },
+              { name: 'Galawati Kebab', icon: '🥘' },
+              { name: 'Kakori Kebab', icon: '🍗' },
+              { name: 'Sheermal', icon: '🥖' }
+            ].map((dish) => (
               <motion.div
-                key={dish}
-                className="bg-white bg-opacity-10 px-4 py-2 rounded-full text-white"
-                whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.2)' }}
+                key={dish.name}
+                className="bg-white/5 backdrop-blur-sm px-6 py-3 rounded-full border border-border hover:border-accent/50 transition-colors duration-200"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {dish}
+                <span className="mr-2" aria-hidden="true">{dish.icon}</span>
+                <span className="text-primary/90">{dish.name}</span>
               </motion.div>
             ))}
           </div>
@@ -338,10 +612,12 @@ function AnimatedRecipeCard({ dish, ingredients }) {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <div
-      className="w-64 h-80 perspective-1000"
+    <motion.div
+      className="w-72 h-96 perspective-1000 cursor-pointer"
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
+      whileHover={{ scale: 1.02 }}
+      transition={{ duration: 0.3 }}
     >
       <motion.div 
         className="relative w-full h-full"
@@ -350,21 +626,27 @@ function AnimatedRecipeCard({ dish, ingredients }) {
         transition={{ duration: 0.6 }}
         style={{ transformStyle: 'preserve-3d' }}
       >
-        <div className="absolute w-full h-full backface-hidden bg-white rounded-lg shadow-lg p-4">
-          <img src={dish.image} alt={dish.name} className="w-full h-40 object-cover rounded-lg mb-4" />
-          <h3 className="text-xl font-semibold text-gray-800">{dish.name}</h3>
-          <p className="text-gray-600">{dish.description}</p>
+        <div className="absolute w-full h-full backface-hidden bg-white/10 backdrop-blur-sm rounded-lg shadow-lg p-6">
+          <img src={dish.image} alt={dish.name} className="w-full h-48 object-cover rounded-lg mb-4" />
+          <h3 className="text-xl font-semibold text-primary mb-2">{dish.name}</h3>
+          <p className="text-primary/80">{dish.description}</p>
         </div>
-        <div className="absolute w-full h-full backface-hidden bg-yellow-400 rounded-lg shadow-lg p-4" style={{ transform: 'rotateY(180deg)' }}>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Ingredients</h3>
-          <ul className="text-gray-700">
+        <div 
+          className="absolute w-full h-full backface-hidden bg-secondary/10 backdrop-blur-sm rounded-lg shadow-lg p-6" 
+          style={{ transform: 'rotateY(180deg)' }}
+        >
+          <h3 className="text-xl font-semibold text-primary mb-4">Ingredients</h3>
+          <ul className="text-primary/80 space-y-2">
             {ingredients.map((ingredient, index) => (
-              <li key={index}>{ingredient}</li>
+              <li key={index} className="flex items-center">
+                <span className="mr-2">•</span>
+                {ingredient}
+              </li>
             ))}
           </ul>
         </div>
       </motion.div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -372,40 +654,100 @@ function AnimatedRecipeCard({ dish, ingredients }) {
 function TodaysSpecials() {
   const specials = [
     {
-      dish: {
-        name: 'Dosa',
-        description: 'Crispy South Indian crepe made from fermented rice and lentil batter.',
-        image: `${process.env.PUBLIC_URL}/images/dosa.jpg`
-      },
-      ingredients: ['Rice', 'Lentils', 'Fenugreek Seeds', 'Salt']
+      name: 'Awadhi Biryani',
+      description: 'Fragrant basmati rice layered with tender meat and aromatic spices, slow-cooked to perfection.',
+      ingredients: ['Basmati Rice', 'Tender Meat', 'Saffron', 'Whole Spices', 'Ghee', 'Caramelized Onions']
     },
     {
-      dish: {
-        name: 'Chaat',
-        description: 'A savory snack originating from India, typically served as a hors d\'oeuvre.',
-        image: `${process.env.PUBLIC_URL}/images/chaat.jpg`
-      },
-      ingredients: ['Chickpeas', 'Potatoes', 'Onions', 'Tamarind Chutney', 'Yogurt']
+      name: 'Galawati Kebab',
+      description: 'Melt-in-your-mouth kebabs made with minced meat and secret blend of spices.',
+      ingredients: ['Minced Meat', 'Traditional Spices', 'Raw Papaya', 'Caramelized Onions', 'Ghee']
     },
     {
-      dish: {
-        name: 'Pizza',
-        description: 'Our signature pizza with a blend of Indian and Italian flavors.',
-        image: `${process.env.PUBLIC_URL}/images/pizza.jpg`
-      },
-      ingredients: ['Naan Bread', 'Tomato Sauce', 'Mozzarella', 'Tandoori Chicken', 'Bell Peppers']
+      name: 'Shahi Tukda',
+      description: 'Royal dessert made with bread soaked in saffron-infused milk and garnished with nuts.',
+      ingredients: ['Bread', 'Milk', 'Saffron', 'Cardamom', 'Nuts', 'Sugar']
     },
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-[#4a0e0b] to-[#8B0000]">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-bold mb-8 text-center text-white">Today's Specials</h2>
-        <div className="flex flex-wrap justify-center gap-8">
+    <section className="py-20 bg-background relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute w-full h-full opacity-30">
+          <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-accent/5 rounded-full blur-3xl transform -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-secondary/5 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2" />
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold text-primary mb-4">Today's Specials</h2>
+          <p className="text-primary/80 max-w-2xl mx-auto">
+            Experience our chef's carefully curated selection of authentic Lucknowi delicacies
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {specials.map((special, index) => (
-            <AnimatedRecipeCard key={index} dish={special.dish} ingredients={special.ingredients} />
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="w-full max-w-sm"
+            >
+              <div className="group relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-border hover:border-accent/20 transition-colors duration-300 shadow-lg hover:shadow-xl p-6">
+                <h3 className="text-2xl font-bold text-primary mb-3">{special.name}</h3>
+                <p className="text-primary/80 mb-6">{special.description}</p>
+
+                <div className="mb-4">
+                  <h4 className="text-primary font-semibold mb-3">Ingredients:</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {special.ingredients.map((ingredient, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-xs bg-accent/10 text-accent"
+                      >
+                        {ingredient}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mt-12"
+        >
+          <Link
+            to="/menu"
+            className="inline-flex items-center space-x-2 bg-primary/5 hover:bg-primary/10 text-primary px-6 py-3 rounded-full transition-colors duration-200 group"
+          >
+            <span>View Full Menu</span>
+            <svg
+              className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
@@ -414,48 +756,150 @@ function TodaysSpecials() {
 // Footer Component
 function Footer() {
   return (
-    <footer className="bg-gray-900 py-10">
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-xl sm:text-2xl font-semibold mb-4 text-yellow-500">Baba Chatore</h3>
-            <p className="text-gray-400">Global Cuisine Experience</p>
-          </div>
-          <div>
-            <h4 className="text-lg sm:text-xl font-semibold mb-4 text-yellow-500">Quick Links</h4>
-            <ul className="space-y-2">
-              {['Home', 'About', 'Menu', 'Gallery', 'Locate'].map((item) => (
-                <li key={item}>
-                  <Link to={item === 'Home' ? '/' : `/${item.toLowerCase()}`} className="text-gray-400 hover:text-yellow-500 transition">{item}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-lg sm:text-xl font-semibold mb-4 text-yellow-500">Contact Us</h4>
-            <p className="text-gray-400">AIROOMS Girls Hostel, Plot No-37/38,</p>
-            <p className="text-gray-400">Hasemau Near, Left Lane from Petrol Pump,</p>
-            <p className="text-gray-400">4, Amity University Rd, Uttar Pradesh 226010, India</p>
-            <p className="text-gray-400">Phone: +91 7838231467</p>
-            <p className="text-gray-400">Email: info@babachatore.com</p>
-          </div>
-          <div>
-            <h4 className="text-lg sm:text-xl font-semibold mb-4 text-yellow-500">Follow Us</h4>
-            <div className="flex space-x-4">
-              {[
-                { name: 'Facebook', url: 'https://facebook.com' },
-                { name: 'Instagram', url: 'https://instagram.com' },
-                { name: 'Twitter', url: 'https://twitter.com' }
-              ].map((item) => (
-                <a key={item.name} href={item.url} target="_blank" rel="noopener noreferrer" className="text-2xl text-gray-400 hover:text-yellow-500 transition">
-                  {item.name.charAt(0)}
-                </a>
-              ))}
-            </div>
+    <footer className="bg-primary/5 backdrop-blur-sm border-t border-primary/10">
+      <div className="relative overflow-hidden">
+        {/* Animated accent lines */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] animate-[spin_60s_linear_infinite]">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute border border-accent/20"
+                style={{
+                  width: `${50 + i * 20}%`,
+                  height: `${50 + i * 20}%`,
+                  top: '25%',
+                  left: '25%',
+                  borderRadius: '42% 38% 62% 49%',
+                  transform: `rotate(${i * 60}deg)`,
+                  animationDelay: `${-i * 2}s`,
+                }}
+              />
+            ))}
           </div>
         </div>
-        <div className="mt-8 text-center text-gray-400">
-          <p>&copy; 2024 Baba Chatore. All Rights Reserved.</p>
+
+        <div className="container mx-auto px-6 py-12 relative">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="space-y-4"
+            >
+              <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
+                Baba Chatore
+              </h3>
+              <p className="text-primary/70">Authentic Lucknowi Cuisine</p>
+              <div className="flex space-x-4">
+                {[
+                  { name: 'Facebook', icon: 'fb' },
+                  { name: 'Instagram', icon: 'ig' },
+                  { name: 'Twitter', icon: 'tw' }
+                ].map((item) => (
+                  <motion.a
+                    key={item.name}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    href={`https://${item.name.toLowerCase()}.com`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary/60 hover:text-accent transition-colors duration-200"
+                    aria-label={`Follow us on ${item.name}`}
+                  >
+                    <div className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-sm flex items-center justify-center hover:bg-white/10 transition-colors duration-200">
+                      {item.icon}
+                    </div>
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="space-y-4"
+            >
+              <h4 className="text-lg font-semibold text-primary">Quick Links</h4>
+              <ul className="space-y-2">
+                {['Home', 'About', 'Services', 'Menu', 'Gallery', 'Locate'].map((item, index) => (
+                  <motion.li
+                    key={item}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <Link
+                      to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                      className="text-primary/70 hover:text-accent transition-colors duration-200 flex items-center group"
+                    >
+                      <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">→</span>
+                      {item}
+                    </Link>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="space-y-4"
+            >
+              <h4 className="text-lg font-semibold text-primary">Contact Us</h4>
+              <address className="not-italic text-primary/70 space-y-2">
+                <p>AIROOMS Girls Hostel, Plot No-37/38,</p>
+                <p>Hasemau Near, Left Lane from Petrol Pump,</p>
+                <p>4, Amity University Rd, Uttar Pradesh 226010</p>
+                <motion.p
+                  whileHover={{ scale: 1.02 }}
+                  className="text-accent hover:text-accent/90 transition-colors duration-200"
+                >
+                  <a href="tel:+917838231467">+91 7838231467</a>
+                </motion.p>
+                <motion.p
+                  whileHover={{ scale: 1.02 }}
+                  className="text-accent hover:text-accent/90 transition-colors duration-200"
+                >
+                  <a href="mailto:info@babachatore.com">info@babachatore.com</a>
+                </motion.p>
+              </address>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="space-y-4"
+            >
+              <h4 className="text-lg font-semibold text-primary">Opening Hours</h4>
+              <div className="text-primary/70 space-y-2">
+                <p>Monday - Sunday</p>
+                <p className="font-medium text-accent">24 Hours</p>
+                <p className="mt-4">Delivery Hours:</p>
+                <p className="font-medium text-accent">11:00 AM - 11:00 PM</p>
+              </div>
+            </motion.div>
+          </div>
+          
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="mt-12 pt-8 border-t border-primary/10"
+          >
+            <div className="text-center text-primary/60">
+              <p>&copy; {new Date().getFullYear()} Baba Chatore. All Rights Reserved.</p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </footer>
@@ -482,7 +926,6 @@ function InteractiveGallery() {
   ];
 
   const categories = ['Indoor', 'Outdoor'];
-
   const filteredImages = galleryImages.filter(img => img.category === activeCategory);
 
   const handleClick = (image, index) => {
@@ -528,64 +971,86 @@ function InteractiveGallery() {
   }, [selectedImage, currentIndex]);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-[#4a0e0b] to-[#8B0000] min-h-screen">
+    <section className="py-20 bg-background min-h-screen">
       <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-bold mb-8 text-center text-white-400">Culinary Gallery</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-4xl font-bold text-primary mb-4">Culinary Gallery</h2>
+          <p className="text-primary/80 max-w-2xl mx-auto">
+            Explore our restaurant's ambiance and signature dishes through our visual journey
+          </p>
+        </motion.div>
         
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-8 space-x-4">
           {categories.map((category) => (
-            <button
+            <motion.button
               key={category}
-              className={`px-4 py-2 mx-2 rounded-full transition-colors ${
+              className={`px-6 py-2 rounded-full transition-colors duration-200 ${
                 activeCategory === category
-                  ? 'bg-yellow-500 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  ? 'bg-accent text-white shadow-lg'
+                  : 'bg-secondary/5 text-primary/70 hover:bg-secondary/10'
               }`}
               onClick={() => setActiveCategory(category)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {category}
-            </button>
+            </motion.button>
           ))}
         </div>
 
-        <div className="relative">
+        <div className="relative bg-white/5 backdrop-blur-sm rounded-lg p-6 shadow-lg">
           <button
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 p-2 rounded-full z-10 text-white"
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-background/80 hover:bg-background/90 backdrop-blur-sm p-3 rounded-full z-10 text-primary transition-colors duration-200"
             onClick={() => scroll(-300)}
             aria-label="Scroll left"
           >
-            &#9664;
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
           </button>
+          
           <div
             ref={scrollRef}
-            className="flex overflow-x-auto scrollbar-hide space-x-4 py-4"
+            className="flex overflow-x-auto scrollbar-hide space-x-6 py-4"
             style={{ scrollBehavior: 'smooth' }}
           >
             {filteredImages.map((image, index) => (
               <motion.div
                 key={index}
-                className="flex-none w-72 h-96 relative rounded-lg overflow-hidden cursor-pointer"
-                whileHover={{ scale: 1.05 }}
+                className="flex-none w-72 h-96 relative rounded-lg overflow-hidden cursor-pointer group"
+                whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
                 onClick={() => handleClick(image, index)}
               >
-                <img
+                <ImageWithFallback
                   src={image.src}
+                  fallbackSrc={image.fallbackImage}
                   alt={image.alt}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-4">
-                  <p className="text-white text-lg font-semibold">{image.alt}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent group-hover:from-background/90 transition-colors duration-200">
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <p className="text-primary text-lg font-semibold">{image.alt}</p>
+                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
+          
           <button
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 p-2 rounded-full z-10 text-white"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-background/80 hover:bg-background/90 backdrop-blur-sm p-3 rounded-full z-10 text-primary transition-colors duration-200"
             onClick={() => scroll(300)}
             aria-label="Scroll right"
           >
-            &#9654;
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
@@ -593,31 +1058,67 @@ function InteractiveGallery() {
       <AnimatePresence>
         {selectedImage && (
           <motion.div
-            className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-background/95 backdrop-blur-md flex items-center justify-center z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.img
-              src={selectedImage.src}
-              alt={selectedImage.alt}
-              className="max-w-full max-h-[80vh] object-contain"
-              initial={{ scale: 0.8, opacity: 0 }}
+            <motion.div
+              className="relative max-w-5xl w-full mx-4"
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
-            />
-            <motion.p
-              className="absolute bottom-4 left-0 right-0 text-center text-white text-lg"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 20, opacity: 0 }}
             >
-              {selectedImage.alt}
-            </motion.p>
-            <button onClick={handlePrev} className="absolute left-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full" aria-label="Previous image">&lt;</button>
-            <button onClick={handleNext} className="absolute right-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full" aria-label="Next image">&gt;</button>
-            <button onClick={() => setSelectedImage(null)} className="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 p-2 rounded-full" aria-label="Close gallery">×</button>
+              <img
+                src={selectedImage.src}
+                alt={selectedImage.alt}
+                className="w-full h-auto max-h-[80vh] object-contain rounded-lg shadow-2xl"
+              />
+              <motion.div
+                className="absolute bottom-4 left-0 right-0 text-center"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+              >
+                <p className="text-primary text-xl font-semibold bg-background/80 backdrop-blur-sm inline-block px-6 py-2 rounded-full">
+                  {selectedImage.alt}
+                </p>
+              </motion.div>
+              
+              <div className="absolute top-4 right-4 space-x-4">
+                <button
+                  onClick={() => setSelectedImage(null)}
+                  className="bg-background/80 hover:bg-background/90 backdrop-blur-sm text-primary p-2 rounded-full transition-colors duration-200"
+                  aria-label="Close gallery"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="absolute left-4 right-4 top-1/2 transform -translate-y-1/2 flex justify-between pointer-events-none">
+                <button
+                  onClick={handlePrev}
+                  className="bg-background/80 hover:bg-background/90 backdrop-blur-sm text-primary p-3 rounded-full transition-colors duration-200 pointer-events-auto"
+                  aria-label="Previous image"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="bg-background/80 hover:bg-background/90 backdrop-blur-sm text-primary p-3 rounded-full transition-colors duration-200 pointer-events-auto"
+                  aria-label="Next image"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -625,244 +1126,52 @@ function InteractiveGallery() {
   );
 }
 
-// Welcome Modal Component
-function WelcomeModal({ onClose }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
-    >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="bg-gradient-to-br from-[#4a0e0b] to-[#8B0000] p-8 rounded-lg max-w-md w-full text-center shadow-2xl"
-      >
-        <motion.h2
-          animate={{ 
-            scale: [1, 1.05, 1],
-            color: ['#FFA500', '#FFD700', '#FFA500']
-          }}
-          transition={{ 
-            scale: { repeat: Infinity, duration: 2 },
-            color: { repeat: Infinity, duration: 3 }
-          }}
-          className="text-4xl font-bold mb-4"
-        >
-          Welcome to Baba Chatore
-        </motion.h2>
-        <p className="text-white text-lg mb-6">Embark on a futuristic culinary journey like no other!</p>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onClose}
-          className="bg-yellow-500 text-white px-6 py-2 rounded-full hover:bg-yellow-600 transition duration-300 text-lg font-semibold"
-        >
-          Let's Explore
-        </motion.button>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-// Locate Component
-function Locate() {
-  const [showInfo, setShowInfo] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const address = "AIROOMS Girls Hostel, Plot No-37/38, Hasemau Near, Left Lane from Petrol Pump, 4, Amity University Rd, Uttar Pradesh 226010, India";
-  const mapCenter = [26.8467, 80.9462]; // Lucknow coordinates
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const handleGlobeClick = () => {
-    setShowInfo(!showInfo);
-  };
-
-  const handleDirectionsClick = () => {
-    const encodedAddress = encodeURIComponent(address);
-    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
-    window.open(googleMapsUrl, '_blank');
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-[#4a0e0b] to-[#8B0000] py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto bg-black bg-opacity-70 p-8 rounded-lg">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center text-white mb-12">Find Baba Chatore in Lucknow</h1>
-        
-        <div className="flex flex-col lg:flex-row mb-12 items-start">
-          <div className="w-full lg:w-1/2 mb-8 lg:mb-0">
-            <p className="text-white text-lg mb-6">Experience the heart of Lucknowi cuisine at Baba Chatore. Our restaurant is nestled in the bustling streets of Aminabad, where tradition meets culinary excellence.</p>
-            <div className="flex justify-center space-x-8 mb-6">
-              {[
-                { icon: '🍽️', text: 'Authentic Flavors' },
-                { icon: '🏛️', text: 'Historic Location' },
-                { icon: '🌟', text: 'Unforgettable Experience' }
-              ].map((item, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-4xl mb-2" aria-hidden="true">{item.icon}</div>
-                  <div className="text-white">{item.text}</div>
-                </div>
-              ))}
-            </div>
-            <div className="h-64 sm:h-96 relative">
-            {isMobile ? (
-              <Globe2D onClick={handleGlobeClick} />
-            ) : (
-              <Canvas camera={{ position: [0, 0, 4], fov: 60 }}>
-                <ambientLight intensity={0.5} />
-                <pointLight position={[10, 10, 10]} />
-                <Globe onClick={handleGlobeClick} />
-                <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.5} />
-                <Stars />
-              </Canvas>
-            )}
-            <div className="absolute bottom-4 left-0 right-0 text-center">
-              <p className="text-white bg-black bg-opacity-50 inline-block px-4 py-2 rounded-full">
-                Click the globe to reveal our location!
-              </p>
-            </div>
-          </div>
-          </div>
-          
-          <AnimatePresence>
-            {showInfo ? (
-              <motion.div
-                className="w-full lg:w-1/2 lg:pl-8"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 50 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              >
-                <div className="bg-black bg-opacity-50 rounded-lg p-6">
-                  <h2 className="text-3xl font-bold mb-6 text-yellow-500">Our Location</h2>
-                  <p className="text-white mb-4">{address}</p>
-                  <p className="text-white mb-6">Open 24/7 | Phone: +91 7838231467</p>
-                  <motion.button
-                    onClick={handleDirectionsClick}
-                    className="bg-yellow-500 text-black px-6 py-3 rounded-full text-lg font-semibold hover:bg-yellow-400 transition duration-300"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Get Directions
-                  </motion.button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                className="w-full lg:w-1/2 lg:pl-8"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <div className="bg-black bg-opacity-50 rounded-lg p-6">
-                  <h2 className="text-3xl font-bold mb-6 text-yellow-500">Discover Our Location</h2>
-                  <p className="text-white mb-6">Click on the globe to reveal our exact location and get directions to culinary bliss!</p>
-                  <ul className="text-white list-disc list-inside">
-                    <li>Central location in Aminabad</li>
-                    <li>Easy access from major landmarks</li>
-                    <li>Ample parking available nearby</li>
-                  </ul>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        <div className="bg-black bg-opacity-50 rounded-lg overflow-hidden shadow-xl">
-          <h2 className="text-2xl font-bold mb-6 text-center text-yellow-500 pt-6">Find Us on the Map</h2>
-          <div style={{ height: '400px', width: '100%' }}>
-            <MapContainer center={mapCenter} zoom={15} style={{ height: '100%', width: '100%' }}>
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
-              <Marker position={mapCenter}>
-                <Popup>
-                  Baba Chatore<br />
-                  {address}
-                </Popup>
-              </Marker>
-            </MapContainer>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // Menu Component
 function Menu() {
   const [isLoading, setIsLoading] = useState(true);
-  const [iframeHeight, setIframeHeight] = useState('80vh');
-
-  useEffect(() => {
-    const updateIframeSize = () => {
-      const height = window.innerHeight * 0.8;
-      setIframeHeight(`${height}px`);
-    };
-
-    window.addEventListener('resize', updateIframeSize);
-    updateIframeSize();
-
-    return () => window.removeEventListener('resize', updateIframeSize);
-  }, []);
+  const iframeHeight = '800px';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1a0505] to-[#4a0e0b] flex flex-col items-center justify-center p-4">
-      <motion.h1 
-        className="text-4xl font-bold text-white mb-8"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        Our Menu
-      </motion.h1>
-      
-      {isLoading && (
-        <motion.div 
-          className="text-white text-xl mb-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+    <section id="menu" className="py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-playfair font-bold text-accent mb-4">
+            Our Menu
+          </h2>
+          <p className="text-primary/80 text-lg max-w-3xl mx-auto">
+            Discover our carefully curated selection of authentic Awadhi dishes
+          </p>
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative w-full bg-background/40 backdrop-blur-sm rounded-xl p-1"
         >
-          Loading our delicious menu...
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-lg">
+              <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
+          <iframe
+            src="https://online.anyflip.com/tdviq/yqig/index.html"
+            width="100%"
+            height={iframeHeight}
+            style={{
+              border: 'none',
+              borderRadius: '12px',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+            }}
+            title="Baba Chatore Menu"
+            seamless="seamless"
+            scrolling="no"
+            frameBorder="0"
+            allowFullScreen={true}
+            onLoad={() => setIsLoading(false)}
+          />
         </motion.div>
-      )}
-
-      <motion.div 
-        className="w-full max-w-4xl"
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <iframe
-          src="https://online.anyflip.com/tdviq/yqig/index.html"
-          width="100%"
-          height={iframeHeight}
-          style={{
-            border: 'none',
-            borderRadius: '8px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
-          }}
-          title="Baba Chatore Menu"
-          seamless="seamless"
-          scrolling="no"
-          frameBorder="0"
-          allowFullScreen={true}
-          onLoad={() => setIsLoading(false)}
-        />
-      </motion.div>
-    </div>
+      </div>
+    </section>
   );
 }
 
@@ -908,15 +1217,597 @@ const Globe2D = ({ onClick }) => (
   />
 );
 
+// Locate Component
+function Locate() {
+  const [showInfo, setShowInfo] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const address = "AIROOMS Girls Hostel, Plot No-37/38, Hasemau Near, Left Lane from Petrol Pump, 4, Amity University Rd, Uttar Pradesh 226010, India";
+  const mapCenter = [26.8467, 80.9462]; // Lucknow coordinates
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const handleGlobeClick = () => {
+    setShowInfo(!showInfo);
+  };
+
+  const handleDirectionsClick = () => {
+    const encodedAddress = encodeURIComponent(address);
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+    window.open(googleMapsUrl, '_blank');
+  };
+
+  return (
+    <div className="min-h-screen bg-background py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto bg-white/5 backdrop-blur-sm p-8 rounded-lg shadow-lg">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center text-primary mb-12">Find Baba Chatore in Lucknow</h1>
+        
+        <div className="flex flex-col lg:flex-row mb-12 items-start">
+          <div className="w-full lg:w-1/2 mb-8 lg:mb-0">
+            <p className="text-primary/90 text-lg mb-6">Experience the heart of Lucknowi cuisine at Baba Chatore. Our restaurant is nestled in the bustling streets of Aminabad, where tradition meets culinary excellence.</p>
+            <div className="flex justify-center space-x-8 mb-6">
+              {[
+                { icon: '🍽️', text: 'Authentic Flavors' },
+                { icon: '🏛️', text: 'Historic Location' },
+                { icon: '🌟', text: 'Unforgettable Experience' }
+              ].map((item, index) => (
+                <div key={index} className="text-center">
+                  <div className="text-4xl mb-2" aria-hidden="true">{item.icon}</div>
+                  <div className="text-primary/80">{item.text}</div>
+                </div>
+              ))}
+            </div>
+            <div className="h-64 sm:h-96 relative">
+              {isMobile ? (
+                <Globe2D onClick={handleGlobeClick} />
+              ) : (
+                <Canvas camera={{ position: [0, 0, 4], fov: 60 }}>
+                  <ambientLight intensity={0.5} />
+                  <pointLight position={[10, 10, 10]} />
+                  <Globe onClick={handleGlobeClick} />
+                  <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.5} />
+                  <Stars />
+                </Canvas>
+              )}
+              <div className="absolute bottom-4 left-0 right-0 text-center">
+                <p className="text-primary/90 bg-background/50 backdrop-blur-sm inline-block px-4 py-2 rounded-full">
+                  Click the globe to reveal our location!
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <AnimatePresence mode="wait">
+            {showInfo ? (
+              <motion.div
+                className="w-full lg:w-1/2 lg:pl-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+                  <h2 className="text-3xl font-bold mb-6 text-primary">Our Location</h2>
+                  <p className="text-primary/90 mb-4">{address}</p>
+                  <p className="text-primary/90 mb-6">Open 24/7 | Phone: +91 7838231467</p>
+                  <motion.button
+                    onClick={handleDirectionsClick}
+                    className="bg-secondary text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-secondary/90 transition duration-300"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Get Directions
+                  </motion.button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                className="w-full lg:w-1/2 lg:pl-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 shadow-lg">
+                  <h2 className="text-3xl font-bold mb-6 text-primary">Discover Our Location</h2>
+                  <p className="text-primary/90 mb-6">Click on the globe to reveal our exact location and get directions to culinary bliss!</p>
+                  <ul className="text-primary/80 list-disc list-inside">
+                    <li>Central location in Aminabad</li>
+                    <li>Easy access from major landmarks</li>
+                    <li>Ample parking available nearby</li>
+                  </ul>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden shadow-lg">
+          <h2 className="text-2xl font-bold mb-6 text-center text-primary pt-6">Find Us on the Map</h2>
+          <div style={{ height: '400px', width: '100%' }}>
+            <MapContainer center={mapCenter} zoom={15} style={{ height: '100%', width: '100%' }}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker position={mapCenter}>
+                <Popup>
+                  Baba Chatore<br />
+                  {address}
+                </Popup>
+              </Marker>
+            </MapContainer>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Animated Background Pattern Component
+function AnimatedBackground() {
+  return (
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-secondary/10" />
+        <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path
+                d="M0 32V0h32"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                className="text-primary/[0.05] animate-[dash 30s linear infinite]"
+                strokeDasharray="2,4"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_500px_at_50%_200px,rgba(14,165,233,0.1),transparent)]" />
+      </div>
+      <div className="absolute inset-0 animate-[pulse_10s_ease-in-out_infinite]">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full mix-blend-overlay filter blur-xl opacity-30 animate-blob"
+            style={{
+              backgroundColor: i === 0 ? '#0ea5e9' : i === 1 ? '#64748b' : '#1f2937',
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${300 + Math.random() * 200}px`,
+              height: `${300 + Math.random() * 200}px`,
+              animationDelay: `${i * 2}s`,
+              transform: `translate(-50%, -50%) scale(${0.5 + Math.random() * 0.5})`,
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Quick Booking Form Component
+const BookingForm = ({ service, onClose }) => {
+  const [formData, setFormData] = useState({
+    date: '',
+    guests: '',
+    name: '',
+    phone: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission
+    console.log('Booking submitted:', formData);
+    onClose();
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm text-white/70 mb-1">Date</label>
+        <input
+          type="date"
+          className="w-full px-4 py-2 rounded-lg bg-white/5 text-white border border-white/10"
+          value={formData.date}
+          onChange={e => setFormData({...formData, date: e.target.value})}
+          min={new Date().toISOString().split('T')[0]}
+          required
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-white/70 mb-1">Number of Guests</label>
+        <input
+          type="number"
+          className="w-full px-4 py-2 rounded-lg bg-white/5 text-white border border-white/10"
+          value={formData.guests}
+          onChange={e => setFormData({...formData, guests: e.target.value})}
+          min="1"
+          required
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-white/70 mb-1">Your Name</label>
+        <input
+          type="text"
+          className="w-full px-4 py-2 rounded-lg bg-white/5 text-white border border-white/10"
+          value={formData.name}
+          onChange={e => setFormData({...formData, name: e.target.value})}
+          required
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-white/70 mb-1">Phone Number</label>
+        <input
+          type="tel"
+          className="w-full px-4 py-2 rounded-lg bg-white/5 text-white border border-white/10"
+          value={formData.phone}
+          onChange={e => setFormData({...formData, phone: e.target.value})}
+          required
+        />
+      </div>
+      <button 
+        type="submit"
+        className="w-full bg-accent text-white py-2 rounded-lg hover:bg-accent/90 transition-colors"
+      >
+        Book Now
+      </button>
+    </form>
+  );
+};
+
+// Service Modal Component
+const ServiceModal = ({ service, onClose, activeTab, setActiveTab }) => {
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  const handlePrevImage = () => {
+    setSelectedImageIndex((prev) => (prev === 0 ? service.gallery.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = () => {
+    setSelectedImageIndex((prev) => (prev === service.gallery.length - 1 ? 0 : prev + 1));
+  };
+
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (activeTab === 'gallery') {
+        if (e.key === 'ArrowLeft') handlePrevImage();
+        if (e.key === 'ArrowRight') handleNextImage();
+        if (e.key === 'Escape') setIsLightboxOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [activeTab]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="relative max-w-5xl w-full bg-background/95 backdrop-blur-sm rounded-xl p-6 shadow-xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white/60 hover:text-white"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
+        <div className="flex items-center gap-4 mb-6">
+          <div className="p-3 rounded-full bg-white/10">
+            <service.icon className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-3xl font-bold text-white">{service.title}</h3>
+        </div>
+
+        <div className="flex space-x-4 mb-6">
+          {['overview', 'gallery', 'booking'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 rounded-full transition-colors duration-200 ${
+                activeTab === tab
+                  ? 'bg-white text-black'
+                  : 'bg-white/10 text-white/70 hover:bg-white/20'
+              }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-6">
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              <p className="text-white/80 text-lg">{service.description}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3">Features</h4>
+                  <div className="space-y-2">
+                    {service.features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-2 text-white/80">
+                        <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-lg font-semibold text-white mb-3">Pricing</h4>
+                  <div className="space-y-2">
+                    {service.pricing.packages.map((pkg, index) => (
+                      <div key={index} className="flex justify-between items-center text-white/80">
+                        <span>{pkg.name}</span>
+                        <span>₹{pkg.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {service.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-white/10 rounded-full text-sm text-white/80"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'gallery' && (
+            <div className="space-y-6">
+              <div className="relative aspect-video rounded-xl overflow-hidden">
+                <ImageWithFallback
+                  src={service.gallery[selectedImageIndex]}
+                  fallbackSrc={service.fallbackImage}
+                  alt={`${service.title} ${selectedImageIndex + 1}`}
+                  className="w-full h-full object-cover cursor-pointer"
+                  onClick={() => setIsLightboxOpen(true)}
+                />
+                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent" />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrevImage();
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNextImage();
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-6 gap-2">
+                {service.gallery.map((image, index) => (
+                  <motion.button
+                    key={index}
+                    className={`relative aspect-square rounded-lg overflow-hidden ${
+                      selectedImageIndex === index ? 'ring-2 ring-accent' : ''
+                    }`}
+                    onClick={() => setSelectedImageIndex(index)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <ImageWithFallback
+                      src={image}
+                      fallbackSrc={service.fallbackImage}
+                      alt={`${service.title} thumbnail ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    {selectedImageIndex === index && (
+                      <div className="absolute inset-0 bg-accent/20" />
+                    )}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'booking' && (
+            <BookingForm service={service} onClose={onClose} />
+          )}
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {isLightboxOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-60 bg-black/95 flex items-center justify-center"
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            <div className="relative max-w-7xl w-full h-full p-4">
+              <ImageWithFallback
+                src={service.gallery[selectedImageIndex]}
+                fallbackSrc={service.fallbackImage}
+                alt={`${service.title} ${selectedImageIndex + 1}`}
+                className="w-full h-full object-contain"
+              />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevImage();
+                }}
+                className="absolute left-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextImage();
+                }}
+                className="absolute right-8 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setIsLightboxOpen(false)}
+                className="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
+// Enhanced Services Component
+const ServicesComponent = () => {
+  const [selectedService, setSelectedService] = useState(null);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  const filteredServices = activeFilter === 'all'
+    ? services
+    : services.filter(service => service.category === activeFilter);
+
+  return (
+    <section className="py-20 bg-background min-h-screen">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold text-primary mb-4">Our Services</h2>
+          <p className="text-primary/80 max-w-2xl mx-auto">
+            Experience excellence in every aspect of our service offerings
+          </p>
+        </motion.div>
+
+        <div className="flex justify-center gap-4 mb-12">
+          {['all', 'celebrations', 'catering', 'corporate'].map(filter => (
+            <motion.button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`px-6 py-2 rounded-full transition-colors duration-200 ${
+                activeFilter === filter
+                  ? 'bg-accent text-white'
+                  : 'bg-white/10 text-white/70 hover:bg-white/20'
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {filter.charAt(0).toUpperCase() + filter.slice(1)}
+            </motion.button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {filteredServices.map((service, index) => {
+            const Icon = service.icon;
+            return (
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2 }}
+                whileHover={{ scale: 1.02 }}
+                className="group relative cursor-pointer bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-accent/20 transition-all duration-300"
+                onClick={() => {
+                  setSelectedService(service);
+                  setActiveTab('overview');
+                }}
+              >
+                <div className="relative h-80 overflow-hidden">
+                  <ImageWithFallback
+                    src={service.image}
+                    fallbackSrc={service.fallbackImage}
+                    alt={service.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                  <div className="absolute inset-0 flex flex-col justify-end p-6">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 rounded-full bg-white/10">
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-white">
+                        {service.title}
+                      </h3>
+                    </div>
+                    <p className="text-white/80 mb-4">{service.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {service.tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-white/10 rounded-full text-sm text-white/80"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {selectedService && (
+          <ServiceModal
+            service={selectedService}
+            onClose={() => setSelectedService(null)}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        )}
+      </AnimatePresence>
+    </section>
+  );
+};
+
 // Main App Component
 function App() {
-  const [showModal, setShowModal] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    const timer = setTimeout(() => setShowModal(false), 5000);
-    return () => clearTimeout(timer);
   }, []);
 
   if (!isMounted) {
@@ -925,8 +1816,9 @@ function App() {
 
   return (
     <Router>
-      <div className="font-sans bg-gradient-to-br from-[#4a0e0b] to-[#8B0000] text-white min-h-screen">
+      <div className="font-sans bg-background text-primary min-h-screen">
         <Suspense fallback={<LoadingSpinner />}>
+          <AnimatedBackground />
           <ParticleBackground />
           <div className="relative z-10">
             <Header />
@@ -935,19 +1827,16 @@ function App() {
               <Route path="/about" element={<DetailedAboutUs />} />
               <Route path="/gallery" element={<InteractiveGallery />} />
               <Route path="/menu" element={<Menu />} />
+              <Route path="/services" element={<ServicesComponent />} />
               <Route path="/locate" element={<Locate />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to="/services" replace />} />
             </Routes>
             <Footer />
-            <AnimatePresence>
-              {showModal && <WelcomeModal onClose={() => setShowModal(false)} />}
-            </AnimatePresence>
           </div>
         </Suspense>
       </div>
     </Router>
   );
 }
-
 
 export default App;
